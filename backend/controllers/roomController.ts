@@ -29,7 +29,7 @@ const joinRoom = async (req: AuthenticatedRequest, res: Response) => {
       await room.save();
     }
 
-    res.json({ message: "Joined room successfully" });
+    res.json({ roomId: room._id });
   } catch (error) {
     console.error("Error joining room:", error);
     res.status(500).json({ error: "Internal server error" });
