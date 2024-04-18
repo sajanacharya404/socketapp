@@ -10,6 +10,7 @@ const App: React.FC = () => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [roomId, setRoomId] = useState<string | null>(null); // State to store room ID
   const [roomName, setRoomName] = useState<string>(""); // State to store room name input
+  const [joinRoomIdInput, setJoinRoomIdInput] = useState<string>(""); // State to store input for joining room by ID
 
   const handleLogin = (token: string) => {
     setAccessToken(token);
@@ -31,16 +32,17 @@ const App: React.FC = () => {
           },
         }
       );
-      setRoomId(response.data.roomId);
+      const createdRoomId = await response.data.roomId;
+      setRoomId(createdRoomId); // Set the room ID in state
     } catch (error) {
       console.error("Error creating room:", error);
     }
   };
 
-  const joinRoom = async (roomId: string) => {
+  const joinRoom = async () => {
     try {
-      await axios.post(
-        `http://localhost:3001/api/rooms/${roomId}/join`,
+      const res = await axios.post(
+        `http://localhost:3001/api/rooms/${joinRoomIdInput}/join`,
         {},
         {
           headers: {
@@ -48,15 +50,16 @@ const App: React.FC = () => {
           },
         }
       );
-      setRoomId(roomId);
+      const joinedRoomId = await res.data.roomId;
+      setRoomId(joinedRoomId);
     } catch (error) {
       console.error("Error joining room:", error);
     }
   };
 
   return (
-    <div>
-      <h1>Chat Application</h1>
+    <div className="max-w-lg mx-auto mt-8 p-6 border rounded-md shadow-md">
+      <h1 className="text-3xl font-semibold mb-8">Chat Application</h1>
       {accessToken ? (
         roomId ? (
           <ChatRoom
@@ -72,8 +75,14 @@ const App: React.FC = () => {
               value={roomName}
               placeholder="Enter room name"
               onChange={(e) => setRoomName(e.target.value)}
+              className="w-full mb-4 p-2 rounded-md border outline-none focus:border-blue-500"
             />
-            <button onClick={createRoom}>Create Room</button>
+            <button
+              onClick={createRoom}
+              className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+            >
+              Create Room
+            </button>
           </div>
         )
       ) : (
@@ -84,9 +93,16 @@ const App: React.FC = () => {
           <input
             type="text"
             placeholder="Enter room ID to join"
-            onChange={(e) => setRoomId(e.target.value)}
+            value={joinRoomIdInput}
+            onChange={(e) => setJoinRoomIdInput(e.target.value)}
+            className="w-full mb-4 p-2 rounded-md border outline-none focus:border-blue-500"
           />
-          <button onClick={() => joinRoom(roomId || "")}>Join Room</button>
+          <button
+            onClick={joinRoom}
+            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+          >
+            Join Room
+          </button>
         </div>
       )}
     </div>

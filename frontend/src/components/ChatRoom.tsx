@@ -7,7 +7,6 @@ interface ChatRoomProps {
   socket: SocketIOClient.Socket;
   roomId: string; // Add roomId prop
 }
-
 const ChatRoom: React.FC<ChatRoomProps> = ({
   accessToken,
   onLogout,
@@ -16,11 +15,22 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
 }) => {
   const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<string[]>([]);
+  const [joinedRoom, setJoinedRoom] = useState<boolean>(false); // State to track if user has joined the room
 
   useEffect(() => {
-    socket.emit("joinRoom", roomId); // Join the specified room
-    loadMessageHistory();
-  }, [roomId]); // Reload message history when roomId changes
+    console.log("Room ID changed:", roomId);
+    if (roomId) {
+      console.log("Joining room...");
+      socket.emit("joinRoom", roomId);
+      setJoinedRoom(true);
+    }
+  }, [roomId, socket]);
+
+  useEffect(() => {
+    if (joinedRoom) {
+      loadMessageHistory();
+    }
+  }, [roomId, joinedRoom]); // Load message history whenever roomId changesss
 
   useEffect(() => {
     socket.on("message", (msg: string) => {
@@ -41,7 +51,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
           },
         }
       );
-      setMessages(response.data.map((msg: any) => msg.text));
+      setMessages(await response.data.map((msg: any) => msg.text));
     } catch (error) {
       console.error("Error fetching message history:", error);
     }
@@ -66,20 +76,37 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
   };
 
   return (
-    <div>
-      <h2>Chat Room</h2>
-      <div>
+    <div className="max-w-lg mx-auto mt-8 p-6 border rounded-md shadow-md">
+      <h2 className="text-2xl font-semibold mb-4">Chat Room</h2>
+      <div className="overflow-y-auto max-h-80 mb-4">
         {messages.map((msg, index) => (
-          <div key={index}>{msg}</div>
+          <div key={index} className="mb-2 p-2 rounded-lg bg-gray-100">
+            {msg}
+          </div>
         ))}
       </div>
-      <input
-        type="text"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-      />
-      <button onClick={handleSendMessage}>Send</button>
-      <button onClick={handleLogout}>Logout</button>
+      {joinedRoom && ( // Render input field and send button only if the user has joined the room
+        <div className="flex">
+          <input
+            type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            className="flex-grow p-2 rounded-md border outline-none focus:border-blue-500"
+          />
+          <button
+            onClick={handleSendMessage}
+            className="ml-2 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+          >
+            Send
+          </button>
+        </div>
+      )}
+      <button
+        onClick={handleLogout}
+        className="mt-4 bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+      >
+        Logout
+      </button>
     </div>
   );
 };
