@@ -12,7 +12,7 @@ const messageSchema = new Schema<MessageInterface>(
     room: { type: String, required: true },
   },
   { timestamps: true }
-); // Add timestamps for createdAt and updatedAt
+);
 
 const Message = mongoose.model<MessageInterface>("Message", messageSchema);
 

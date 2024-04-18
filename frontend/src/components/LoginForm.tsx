@@ -50,48 +50,50 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-8 p-6 border rounded-md shadow-md">
-      <h2 className="text-2xl mb-4 font-semibold">
-        {isRegistering ? "Register" : "Login"}
-      </h2>
-      <input
-        type="text"
-        value={username}
-        placeholder="Username"
-        onChange={(e) => setUsername(e.target.value)}
-        className="w-full mb-4 p-3 rounded-md border outline-none focus:border-blue-500"
-      />
-      <input
-        type="password"
-        value={password}
-        placeholder="Password"
-        onChange={(e) => setPassword(e.target.value)}
-        className="w-full mb-4 p-3 rounded-md border outline-none focus:border-blue-500"
-      />
-      {isRegistering && (
+    <div className=" flex justify-center items-center ">
+      <div className="max-w-md mx-auto p-6  rounded-md  bg-white">
+        <h2 className="text-2xl mb-4 font-semibold">
+          {isRegistering ? "Register" : "Login"}
+        </h2>
         <input
-          type="password"
-          value={confirmPassword}
-          placeholder="Confirm Password"
-          onChange={(e) => setConfirmPassword(e.target.value)}
+          type="text"
+          value={username}
+          placeholder="Username"
+          onChange={(e) => setUsername(e.target.value)}
           className="w-full mb-4 p-3 rounded-md border outline-none focus:border-blue-500"
         />
-      )}
-      {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-      <button
-        onClick={isRegistering ? handleRegister : handleLogin}
-        className="w-full bg-blue-500 text-white py-3 px-6 rounded-md hover:bg-blue-600"
-      >
-        {isRegistering ? "Register" : "Login"}
-      </button>
-      <p
-        onClick={() => setIsRegistering(!isRegistering)}
-        className="text-center mt-4 text-blue-500 cursor-pointer"
-      >
-        {isRegistering
-          ? "Already have an account? Login"
-          : "Don't have an account? Register"}
-      </p>
+        <input
+          type="password"
+          value={password}
+          placeholder="Password"
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full mb-4 p-3 rounded-md border outline-none focus:border-blue-500"
+        />
+        {isRegistering && (
+          <input
+            type="password"
+            value={confirmPassword}
+            placeholder="Confirm Password"
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            className="w-full mb-4 p-3 rounded-md border outline-none focus:border-blue-500"
+          />
+        )}
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+        <button
+          onClick={isRegistering ? handleRegister : handleLogin}
+          className="w-full bg-blue-500 text-white py-3 px-6 rounded-md hover:bg-blue-600"
+        >
+          {isRegistering ? "Register" : "Login"}
+        </button>
+        <p
+          onClick={() => setIsRegistering(!isRegistering)}
+          className="text-center mt-4 text-blue-500 cursor-pointer"
+        >
+          {isRegistering
+            ? "Already have an account? Login"
+            : "Don't have an account? Register"}
+        </p>
+      </div>
     </div>
   );
 };
