@@ -7,12 +7,7 @@ interface ChatRoomProps {
   socket: SocketIOClient.Socket;
   roomId: string; // Add roomId prop
 }
-const ChatRoom: React.FC<ChatRoomProps> = ({
-  accessToken,
-  onLogout,
-  socket,
-  roomId,
-}) => {
+const ChatRoom: React.FC<ChatRoomProps> = ({ accessToken, socket, roomId }) => {
   const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<string[]>([]);
   const [joinedRoom, setJoinedRoom] = useState<boolean>(false); // State to track if user has joined the room
@@ -44,7 +39,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
   const loadMessageHistory = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3001/api/messages/${roomId}`, // Use roomId in the API URL
+        `http://localhost:3001/api/messages/${roomId}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -60,19 +55,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
   const handleSendMessage = () => {
     socket.emit("sendMessage", { message, roomId }); // Send message to the current room
     setMessage("");
-  };
-
-  const handleLogout = async () => {
-    try {
-      await axios.post("http://localhost:3001/api/auth/logout", null, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      onLogout();
-    } catch (error) {
-      console.error("Error during logout:", error);
-    }
   };
 
   return (
@@ -101,12 +83,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
           </button>
         </div>
       )}
-      <button
-        onClick={handleLogout}
-        className="mt-4 bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
-      >
-        Logout
-      </button>
     </div>
   );
 };
