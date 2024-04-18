@@ -32,7 +32,7 @@ const loginUser = async (req: Request, res: Response) => {
       process.env.JWT_SECRET || "secret",
       { expiresIn: "1h" }
     );
-    res.json({ accessToken: token });
+    res.json({ user, accessToken: token });
   } catch (error) {
     console.error("Error during login:", error);
     res.status(500).json({ error: "Internal server error" });
